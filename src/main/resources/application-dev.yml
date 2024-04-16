@@ -1,0 +1,26 @@
+spring:
+  kafka:
+    bootstrap-servers: 192.168.0.186:9092
+    listener:
+      #批量发送消息
+      type: batch
+      ack-mode: MANUAL_IMMEDIATE
+    producer:
+      #生产者在发送消息后会等待集群的首领节点确认。一旦首领节点确认接收到消息，生产者就会认为消息已成功发送。这种配置提供了更高的可靠性，因为消息至少会被写入到首领节点的日志中，但仍然存在单点故障的风险
+      acks: 1
+      properties:
+        linger:
+          ms: 1000
+    consumer:
+      #ack.acknowledge手动应答
+      enable-auto-commit: false
+      #订阅主题时，选择分区最后的偏移量
+      auto-offset-reset: latest
+      #poll 一次拉取200条数据
+      max-poll-records: 200
+      properties:
+        receive.buffer.bytes: 10485760
+        #poll 满足下面两个条件，消费者就poll
+        fetch.min.bytes: 65536
+        fetch.max.wait.ms: 1500
+
